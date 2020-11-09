@@ -1,5 +1,6 @@
 /*
   MotorShield.h - Library for controlling NodeMCU MotorShield
+  Author - Tomasz Babiuk
 */
 #ifndef MotorShield_h
 #define MotorShield_h

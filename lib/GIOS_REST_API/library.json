@@ -1,0 +1,7 @@
+{
+    "name": "GIOS REST API",
+    "version": "1.0",
+    "dependencies" : [
+      { "name": "ArduinoJson"}
+    ]
+  }

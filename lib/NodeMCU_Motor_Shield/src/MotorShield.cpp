@@ -1,5 +1,6 @@
 /*
   MotorShield.cpp - Library for controlling NodeMCU MotorShield
+  Author - Tomasz Babiuk
 */
 
 #include <Arduino.h>
