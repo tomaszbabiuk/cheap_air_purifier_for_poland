@@ -13,8 +13,12 @@ static WiFiClient _client;
 static HTTPClient _http;
 static DynamicJsonBuffer _jsonBuffer;
 
+#define GIOS_ERROR_CANNOT_CONNECT    -1.00
+#define GIOS_ERROR_NON_200_HTTP_CODE -2.00
+#define GIOS_ERROR_PARSIGN_EXCEPTION -3.00
+
 double GIOSRestApi::getSensorData(int sensorId) {
-    if (_http.begin(_client, "http://api.gios.gov.pl/pjp-api/rest/data/getData/" + sensorId)) {
+    if (_http.begin(_client, "http://api.gios.gov.pl/pjp-api/rest/data/getData/" + String(sensorId))) {
         int httpCode = _http.GET();
 
         if (httpCode == 200) {
@@ -29,16 +33,16 @@ double GIOSRestApi::getSensorData(int sensorId) {
                     }
                 }
 
-                return GIOS_ERROR_PARSING_EXCEPTION;
+                return GIOS_ERROR_PARSIGN_EXCEPTION;
             }
         } else {
             return GIOS_ERROR_NON_200_HTTP_CODE;
         }
 
         _http.end();
-    } else {
-        return GIOS_ERROR_CANNOT_CONNECT;
     }
+
+    return GIOS_ERROR_CANNOT_CONNECT;
 }
 
 
