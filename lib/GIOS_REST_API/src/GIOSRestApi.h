@@ -5,18 +5,27 @@
 #ifndef GIOSRestApi_h
 #define GIOSRestApi_h
 
-#include <Arduino.h>
+#include "GIOSTimeParser.h"
 
-#define GIOS_ERROR_CANNOT_CONNECT    -1.00
-#define GIOS_ERROR_NON_200_HTTP_CODE -2.00
-#define GIOS_ERROR_PARSING_EXCEPTION -3.00
+enum gios_error {
+    NoError,
+    CannotConnect,
+    Non200HttpCode,
+    JsonParsingError
+};
+
+struct gios_result {
+    double sensorData;
+    gios_time time;
+    gios_error error;
+};
 
 class GIOSRestApi
 {
-  public:
-    static double getSensorData(int sensorId);
+    public:
+        static gios_result getSensorData(int sensorId);
 
-  private:
+    private:
 };
 
 #endif

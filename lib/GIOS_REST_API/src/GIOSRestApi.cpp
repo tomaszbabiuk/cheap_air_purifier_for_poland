@@ -4,7 +4,8 @@
 */
 
 #include <Arduino.h>
-#include "GiosRestAPI.h"
+#include "GIOSRestAPI.h"
+#include "GIOSTimeParser.h"
 #include <WiFiClient.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
@@ -13,38 +14,45 @@ static WiFiClient _client;
 static HTTPClient _http;
 static DynamicJsonBuffer _jsonBuffer;
 
-#define GIOS_ERROR_CANNOT_CONNECT    -1.00
-#define GIOS_ERROR_NON_200_HTTP_CODE -2.00
-#define GIOS_ERROR_PARSIGN_EXCEPTION -3.00
+#define DATE_HEADER "date"
+const char * headerkeys[] = { DATE_HEADER };
 
-double GIOSRestApi::getSensorData(int sensorId) {
+gios_result GIOSRestApi::getSensorData(int sensorId) {
+    gios_result result;
+    
     if (_http.begin(_client, "http://api.gios.gov.pl/pjp-api/rest/data/getData/" + String(sensorId))) {
+        _http.collectHeaders(headerkeys, 1);
         int httpCode = _http.GET();
 
         if (httpCode == 200) {
             if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
                 JsonObject& root = _jsonBuffer.parseObject(_http.getString());
+                String date = _http.header(DATE_HEADER);
+                result.time = GIOSTimeParser::fromGMTString(date.c_str(), date.length());
 
                 for (int i=0; i<10; i++) {
                     String value = root[String("values")][i]["value"];
                     if (value != "null") {
-                        double doubleValue = root[String("values")][i]["value"];
-                        return doubleValue;
+                        result.sensorData = root[String("values")][i]["value"];
+                        result.error = NoError;
+                        return result;
                     }
                 }
 
-                return GIOS_ERROR_PARSIGN_EXCEPTION;
+                result.error = JsonParsingError;
+                return result;
             }
         } else {
-            return GIOS_ERROR_NON_200_HTTP_CODE;
+            result.error = Non200HttpCode;
+            return result;
         }
 
         _http.end();
     }
 
-    return GIOS_ERROR_CANNOT_CONNECT;
+    result.error = CannotConnect;
+    return result;
 }
-
 
 
 /* 
