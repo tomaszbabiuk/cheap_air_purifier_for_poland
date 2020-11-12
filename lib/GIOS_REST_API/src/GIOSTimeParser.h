@@ -15,6 +15,23 @@ struct gios_time {
     int inSeconds() {
       return h* 3600 + m * 60 + s;
     }
+
+    void increment() {
+      s++;
+      if (s == 60) {
+        m++;
+        s = 0;
+      }
+
+      if (m == 60) {
+        h++;
+        m = 0;
+      }
+
+      if (h == 24) {
+        h=0;
+      }
+    }
 };
 
 class GIOSTimeParser

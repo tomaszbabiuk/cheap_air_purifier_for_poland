@@ -20,11 +20,12 @@ void MotorShield::init() {
 }
 
 void MotorShield::driveMotorA(bool clockwise, int power) {
-    digitalWrite(MOTOR_A_DIRECTION_PIN, clockwise);
+    Serial.printf("Driving motor A: %d.%d\n", clockwise, power);
+    digitalWrite(MOTOR_A_DIRECTION_PIN, !clockwise);
     analogWrite(MOTOR_A_CONTROL_PIN, power);
 }
 
 void MotorShield::driveMotorB(bool clockwise, int power) {
-    digitalWrite(MOTOR_B_DIRECTION_PIN, clockwise);
+    digitalWrite(MOTOR_B_DIRECTION_PIN, !clockwise);
     analogWrite(MOTOR_B_CONTROL_PIN, power);
 }

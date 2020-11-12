@@ -31,10 +31,10 @@ gios_result GIOSRestApi::getSensorData(int sensorId) {
                 result.time = GIOSTimeParser::fromGMTString(date.c_str(), date.length());
 
                 for (int i=0; i<10; i++) {
-                    String value = root[String("values")][i]["value"];
-                    if (value != "null") {
-                        result.sensorData = root[String("values")][i]["value"];
-                        result.error = NoError;
+                    String valueAsString = root[(String)"values"][i]["value"];
+                    double valueAsDouble = atof(valueAsString.c_str());
+                    if (valueAsDouble != 0) {
+                        result.sensorData = valueAsDouble;
                         return result;
                     }
                 }
